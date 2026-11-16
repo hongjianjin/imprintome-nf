@@ -15,7 +15,7 @@ ARG IMPRINTOMER_REF=v1.5.3
 
 LABEL org.opencontainers.image.title="imprintomer" \
       org.opencontainers.image.description="R environment with imprintomeR for the imprintome-nf Nextflow pipeline" \
-      org.opencontainers.image.source="https://github.com/hongjianjin/imprintomeR" \
+      org.opencontainers.image.source="https://github.com/hongjianjin/imprintome-nf" \
       org.opencontainers.image.licenses="Apache-2.0"
 
 # procps provides `ps`, which Nextflow uses to collect task metrics

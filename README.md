@@ -56,8 +56,15 @@ output layout. `nextflow run . --help` lists every parameter.
 
 Both processes run in one container holding R, imprintomeR and its Bioconductor dependencies,
 set with `--imprintomer_container` (default `ghcr.io/hongjianjin/imprintomer:1.5.3`).
-Build it from [containers/imprintomer/Dockerfile](containers/imprintomer/Dockerfile), or point the
-parameter at a local `.sif` file.
+The image is built from [containers/imprintomer/Dockerfile](containers/imprintomer/Dockerfile) by the
+[Build imprintomeR container](.github/workflows/build-container.yml) GitHub Actions workflow, on pushes
+that change the Dockerfile or manually for another imprintomeR tag:
+
+```bash
+gh workflow run build-container.yml -R hongjianjin/imprintome-nf -f imprintomer_ref=v1.5.3
+```
+
+You can also point the parameter at a local `.sif` file.
 
 ## Testing
 
