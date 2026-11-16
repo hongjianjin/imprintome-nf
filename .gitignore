@@ -7,3 +7,4 @@ testing*
 *.pyc
 null/
 *.sif
+tmp_progress.md
