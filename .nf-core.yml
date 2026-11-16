@@ -1,0 +1,16 @@
+repository_type: pipeline
+template:
+  name: imprintome-nf
+  org: stjude
+  description: Illumina methylation array QC and genomic imprinting analysis with imprintomeR
+  author: Hongjian Jin
+  version: 0.1.0dev
+  is_nfcore: false
+  skip_features:
+    - igenomes
+    - multiqc
+    - fastqc
+    - email
+    - slackreport
+    - adaptivecard
+    - seqera_platform

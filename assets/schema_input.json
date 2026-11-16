@@ -1,0 +1,40 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/hongjianjin/imprintome-nf/main/assets/schema_input.json",
+    "title": "imprintome-nf pipeline - params.input schema",
+    "description": "Schema for the samplesheet provided with params.input",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._-]+$",
+                "errorMessage": "Sample name must be provided and may only contain letters, digits, '.', '_' and '-'",
+                "meta": ["id"]
+            },
+            "idat_grn": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+_Grn\\.idat(\\.gz)?$",
+                "errorMessage": "Green-channel IDAT must exist and end in '_Grn.idat' or '_Grn.idat.gz'"
+            },
+            "idat_red": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+_Red\\.idat(\\.gz)?$",
+                "errorMessage": "Red-channel IDAT must exist and end in '_Red.idat' or '_Red.idat.gz'"
+            },
+            "sample_group": {
+                "type": "string",
+                "pattern": "^[^\\t,]*$",
+                "errorMessage": "Sample group may not contain tabs or commas",
+                "meta": ["sample_group"]
+            }
+        },
+        "required": ["sample", "idat_grn", "idat_red"]
+    },
+    "uniqueEntries": ["sample"]
+}

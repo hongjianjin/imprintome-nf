@@ -1,0 +1,4 @@
+sample,idat_grn,idat_red,sample_group
+CTRL_1,assets/test_data/idats/200000000001_R01C01_Grn.idat,assets/test_data/idats/200000000001_R01C01_Red.idat,control
+CTRL_2,assets/test_data/idats/200000000001_R02C01_Grn.idat,assets/test_data/idats/200000000001_R02C01_Red.idat,control
+CASE_1,assets/test_data/idats/200000000001_R03C01_Grn.idat,assets/test_data/idats/200000000001_R03C01_Red.idat,case

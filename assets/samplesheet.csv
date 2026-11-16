@@ -1,0 +1,3 @@
+sample,idat_grn,idat_red,sample_group
+SAMPLE_1,/path/to/idats/207000000001_R01C01_Grn.idat,/path/to/idats/207000000001_R01C01_Red.idat,control
+SAMPLE_2,/path/to/idats/207000000001_R02C01_Grn.idat.gz,/path/to/idats/207000000001_R02C01_Red.idat.gz,case

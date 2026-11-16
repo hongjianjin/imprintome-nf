@@ -1,0 +1,306 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/hongjianjin/imprintome-nf/main/nextflow_schema.json",
+    "title": "imprintome-nf pipeline parameters",
+    "description": "Illumina methylation array QC and genomic imprinting analysis with imprintomeR",
+    "type": "object",
+    "$defs": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["input", "outdir"],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "schema": "assets/schema_input.json",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.(csv|tsv)$",
+                    "description": "Path to a CSV/TSV samplesheet with columns sample, idat_grn, idat_red and optional sample_group.",
+                    "help_text": "One row per array. idat_grn/idat_red point to the *_Grn.idat[.gz] and *_Red.idat[.gz] files of that array. sample_group is written to the Sample_Group metadata column and can be used with --reference_group.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "cohort": {
+                    "type": "string",
+                    "default": "methqc",
+                    "pattern": "^[A-Za-z0-9._-]+$",
+                    "description": "Cohort name, used as prefix for the metadata file and imprintomeR outputs.",
+                    "fa_icon": "fas fa-tag"
+                }
+            }
+        },
+        "qc_options": {
+            "title": "Array QC options",
+            "type": "object",
+            "fa_icon": "fas fa-check-double",
+            "description": "Options passed to imprintomeR's run_meth_QC.R.",
+            "properties": {
+                "platform": {
+                    "type": "string",
+                    "enum": ["EPIC", "EPICv2", "450K"],
+                    "description": "Override platform detection. By default the platform is detected from the IDATs and mixed cohorts are split by platform.",
+                    "fa_icon": "fas fa-microchip"
+                },
+                "pcutoff": {
+                    "type": "number",
+                    "default": 0.05,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Detection p-value threshold: a sample passes when >= 95% of probes are detected at p < this value.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "icutoff": {
+                    "type": "number",
+                    "default": 11,
+                    "description": "Reference line for intensity QC plots only (does not affect Final.QC).",
+                    "fa_icon": "fas fa-ruler-horizontal"
+                },
+                "normalization": {
+                    "type": "string",
+                    "default": "noob",
+                    "enum": ["noob", "noob_swan", "raw"],
+                    "description": "Beta value normalization.",
+                    "fa_icon": "fas fa-balance-scale"
+                },
+                "qc_plot_types": {
+                    "type": "string",
+                    "default": "intensity,detection_pval,probe_coverage,beta_density",
+                    "pattern": "^(all|none|((intensity|detection_pval|probe_coverage|qc_bar|beta_density),?)+)$",
+                    "description": "Comma-separated QC plot types: intensity, detection_pval, probe_coverage, qc_bar, beta_density, or all.",
+                    "fa_icon": "fas fa-chart-bar"
+                },
+                "skip_qc_plots": {
+                    "type": "boolean",
+                    "description": "Suppress all QC plot generation.",
+                    "fa_icon": "fas fa-fast-forward"
+                },
+                "skip_qc_report": {
+                    "type": "boolean",
+                    "description": "Suppress the default QC report PDFs from runMethQC().",
+                    "fa_icon": "fas fa-fast-forward"
+                },
+                "skip_ewastools": {
+                    "type": "boolean",
+                    "description": "Skip the ewastools control metrics, contamination and donor checks.",
+                    "fa_icon": "fas fa-fast-forward"
+                }
+            }
+        },
+        "imprinting_options": {
+            "title": "Imprinting analysis options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Options passed to imprintomeR's run_imprintomeR.R, run once per platform and probeset.",
+            "properties": {
+                "skip_imprintomer": {
+                    "type": "boolean",
+                    "description": "Run array QC only.",
+                    "fa_icon": "fas fa-fast-forward"
+                },
+                "probesets": {
+                    "type": "string",
+                    "default": "selected",
+                    "pattern": "^((selected|NanoImprint|Joshi|Court|Rosenski|Jima|chr11p15|chr20q13),?)+$",
+                    "description": "Comma-separated ICR probesets; each gets its own imprintomeR run.",
+                    "help_text": "Supported: selected, NanoImprint, Joshi, Court, Rosenski, Jima, chr11p15, chr20q13.",
+                    "fa_icon": "fas fa-list"
+                },
+                "genome_build": {
+                    "type": "string",
+                    "default": "hg38",
+                    "enum": ["hg19", "hg38"],
+                    "description": "Genome build used to load the probesets.",
+                    "fa_icon": "fas fa-book"
+                },
+                "ids_cutoff": {
+                    "type": "number",
+                    "default": 0.2,
+                    "minimum": 0,
+                    "description": "Imprinting Deviation Score (IDS) cutoff used for plot filtering.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "reference_group": {
+                    "type": "string",
+                    "description": "Comma-separated sample_group value(s) used as in-cohort controls for reference centring.",
+                    "fa_icon": "fas fa-users"
+                },
+                "reference_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "External control reference: a beta matrix file or an .rds from BuildReferenceProfile().",
+                    "fa_icon": "fas fa-file"
+                },
+                "dmr_type": {
+                    "type": "string",
+                    "description": "DMR types to score: all, or comma-separated DMR_type values such as gametic or secondary. Default: panel default.",
+                    "fa_icon": "fas fa-tags"
+                },
+                "balance": {
+                    "type": "string",
+                    "default": "probe",
+                    "enum": ["probe", "icr"],
+                    "description": "Pooling for the sample-level IDS: probe (median over probes) or icr (ICR-balanced).",
+                    "fa_icon": "fas fa-balance-scale-left"
+                },
+                "icr": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Also score each ICR and write the per-ICR table and multi-locus summary.",
+                    "fa_icon": "fas fa-th-list"
+                },
+                "infinium_type": {
+                    "type": "string",
+                    "default": "all",
+                    "enum": ["all", "I", "II", "balanced"],
+                    "description": "Infinium probe design types to score.",
+                    "fa_icon": "fas fa-microchip"
+                },
+                "imprint_plot_types": {
+                    "type": "string",
+                    "default": "default",
+                    "description": "Comma-separated imprintomeR plot types, or default/all.",
+                    "help_text": "Supported: polar, beeswarm, beeswarm_origin, beeswarm_chr, heatmap_by_probe, heatmap_by_gene, circular_heatmap, rainfall, radar, mirror_density, violin, cor_heatmap, icr_heatmap.",
+                    "fa_icon": "fas fa-chart-area"
+                },
+                "skip_imprint_plots": {
+                    "type": "boolean",
+                    "description": "Suppress all imprintomeR plot generation.",
+                    "fa_icon": "fas fa-fast-forward"
+                }
+            }
+        },
+        "software_options": {
+            "title": "Software options",
+            "type": "object",
+            "fa_icon": "fas fa-box",
+            "description": "Container used by the imprintomeR processes.",
+            "properties": {
+                "imprintomer_container": {
+                    "type": "string",
+                    "default": "ghcr.io/hongjianjin/imprintomer:1.5.3",
+                    "description": "Docker image or local .sif file with R, imprintomeR and its dependencies (see containers/imprintomer/Dockerfile).",
+                    "fa_icon": "fab fa-docker"
+                }
+            }
+        },
+        "institutional_config_options": {
+            "title": "Institutional config options",
+            "type": "object",
+            "fa_icon": "fas fa-university",
+            "description": "Parameters used to describe centralised config profiles. These should not be edited.",
+            "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
+            "properties": {
+                "custom_config_version": {
+                    "type": "string",
+                    "description": "Git commit id for Institutional configs.",
+                    "default": "master",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "custom_config_base": {
+                    "type": "string",
+                    "description": "Base directory for Institutional configs.",
+                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "hidden": true,
+                    "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_name": {
+                    "type": "string",
+                    "description": "Institutional config name.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_description": {
+                    "type": "string",
+                    "description": "Institutional config description.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_contact": {
+                    "type": "string",
+                    "description": "Institutional config contact information.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_url": {
+                    "type": "string",
+                    "description": "Institutional config URL link.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                }
+            }
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Less common options for the pipeline, typically set in a config file.",
+            "properties": {
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "default": "copy",
+                    "description": "Method used to save pipeline results to output directory.",
+                    "fa_icon": "fas fa-copy",
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "hidden": true
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Do not use coloured log outputs.",
+                    "fa_icon": "fas fa-palette",
+                    "hidden": true
+                },
+                "validate_params": {
+                    "type": "boolean",
+                    "description": "Boolean whether to validate parameters against the schema at runtime",
+                    "default": true,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true
+                },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "fa_icon": "far calendar",
+                    "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+                    "hidden": true
+                },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display the help message."
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
+                }
+            }
+        }
+    },
+    "allOf": [
+        { "$ref": "#/$defs/input_output_options" },
+        { "$ref": "#/$defs/qc_options" },
+        { "$ref": "#/$defs/imprinting_options" },
+        { "$ref": "#/$defs/software_options" },
+        { "$ref": "#/$defs/institutional_config_options" },
+        { "$ref": "#/$defs/generic_options" }
+    ]
+}

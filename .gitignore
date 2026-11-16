@@ -1,0 +1,9 @@
+.nextflow*
+work/
+results/
+results_test/
+testing/
+testing*
+*.pyc
+null/
+*.sif
