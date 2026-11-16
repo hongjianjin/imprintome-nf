@@ -33,8 +33,8 @@ Run on the St. Jude HPC with the [nf-core `stjude` institutional profile](https:
 (LSF executor + Singularity):
 
 ```bash
-module load nextflow
 nextflow run hongjianjin/imprintome-nf \
+    -r v1.5.3 \
     -profile stjude \
     --input samplesheet.csv \
     --outdir results \
@@ -46,6 +46,16 @@ nextflow run hongjianjin/imprintome-nf \
 
 `-profile stjude` is pulled from [nf-core/configs](https://github.com/nf-core/configs) at runtime.
 On nodes without internet access, clone nf-core/configs and pass `--custom_config_base /path/to/configs`.
+
+Nextflow 24.10 or newer (with Java 17+) is required. If the cluster's `nextflow` modules are
+older, use a conda environment, which bundles its own Java:
+
+```bash
+conda create -n nextflow -c conda-forge -c bioconda nextflow=24.10.5
+conda activate nextflow
+```
+
+`-r v1.5.3` pins this release; use `-r main -latest` for the development version.
 
 Other profiles: `docker`, `singularity`, `apptainer`, `test`, `debug`.
 

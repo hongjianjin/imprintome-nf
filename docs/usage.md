@@ -19,18 +19,30 @@ The pipeline converts the samplesheet into the metadata TSV that `run_meth_QC.R`
 
 ## Running on the St. Jude HPC
 
+The HPC `nextflow/*` modules (up to 23.10) and default Java (1.8) are too old; the pipeline needs
+Nextflow >= 24.10 with Java 17+. Create a conda environment once:
+
 ```bash
-module load nextflow
-nextflow run hongjianjin/imprintome-nf -profile stjude --input samplesheet.csv --outdir results
+module load conda3/202402
+conda create -y -n nextflow -c conda-forge -c bioconda nextflow=24.10.5
+```
+
+Then, in each session:
+
+```bash
+module load conda3/202402
+conda activate nextflow
+nextflow run hongjianjin/imprintome-nf -r v1.5.3 -profile stjude --input samplesheet.csv --outdir results
 ```
 
 The `stjude` profile from nf-core/configs submits each process as an LSF job, picks the queue
-from the requested resources, and runs tasks in Singularity. Launch Nextflow itself from an
-interactive or long-running job, not on a login node, e.g.
+from the requested resources, and runs tasks in Singularity. Launch Nextflow itself from a
+long-running job, not on a login node, e.g.
 
 ```bash
-bsub -q standard -n 1 -M 8000 -J methqc -oo methqc.log \
-    "nextflow run hongjianjin/imprintome-nf -profile stjude --input samplesheet.csv --outdir results -resume"
+bsub -q standard -n 1 -M 8000 -W 72:00 -J imprintome -oo imprintome.log \
+    "source \$(conda info --base)/etc/profile.d/conda.sh; conda activate nextflow; \
+     nextflow run hongjianjin/imprintome-nf -r v1.5.3 -profile stjude --input samplesheet.csv --outdir results -resume"
 ```
 
 Singularity images are cached under `NXF_SINGULARITY_CACHEDIR`; set it to a shared folder so the
