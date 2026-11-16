@@ -72,6 +72,10 @@ nextflow run . -profile test -stub --outdir results_test
 imprintome-nf was written by Hongjian Jin (St. Jude Children's Research Hospital) on top of imprintomeR
 by Hongjian Jin and Gang Wu.
 
+## License
+
+imprintome-nf is released under the [Apache License 2.0](LICENSE).
+
 ## Citations
 
 If you use imprintome-nf, please cite imprintomeR (Zenodo DOI [10.5281/zenodo.23741652](https://doi.org/10.5281/zenodo.23741652))

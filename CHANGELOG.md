@@ -9,3 +9,4 @@ Initial pipeline structure following nf-core conventions:
 - nf-schema samplesheet and parameter validation
 - Support for nf-core institutional profiles, including `-profile stjude`
 - Dockerfile for the imprintomeR container
+- Apache-2.0 license
