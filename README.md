@@ -68,11 +68,14 @@ You can also point the parameter at a local `.sif` file.
 
 ## Testing
 
-A wiring test on placeholder IDATs, run from the pipeline folder:
+A wiring test on placeholder IDATs (downloaded from this repo, so it runs from any folder):
 
 ```bash
-nextflow run . -profile test -stub --outdir results_test
+nextflow run hongjianjin/imprintome-nf -r main -profile test -stub --outdir results_test
 ```
+
+`-profile test` uses no container; add `stjude` (`-profile stjude,test`) to also check the
+Singularity image and LSF submission.
 
 ## Credits
 
