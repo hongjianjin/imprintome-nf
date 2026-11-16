@@ -8,3 +8,4 @@ testing*
 null/
 *.sif
 tmp_*.md
+tmp_test/
