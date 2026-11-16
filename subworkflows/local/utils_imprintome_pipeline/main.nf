@@ -63,12 +63,10 @@ workflow PIPELINE_COMPLETION {
     outdir // path: Path to output directory where results will be published
 
     main:
+    // Keep `workflow` references out of the handler closure: Nextflow runs it with the
+    // workflow metadata as delegate, so `workflow.success` there does not resolve.
     workflow.onComplete {
-        if (workflow.success) {
-            log.info "-[${workflow.manifest.name}] Pipeline completed successfully. Results: ${outdir}"
-        } else {
-            log.error "-[${workflow.manifest.name}] Pipeline completed with errors"
-        }
+        completionSummary(outdir)
     }
 
     workflow.onError {
@@ -95,6 +93,17 @@ def idatPrefix(sample, grn, red) {
         error("Sample '${sample}': Grn and Red IDATs have different prefixes (${grn_prefix} vs ${red_prefix})")
     }
     return grn_prefix
+}
+
+//
+// Print a one-line completion summary
+//
+def completionSummary(outdir) {
+    if (workflow.success) {
+        log.info "-[${workflow.manifest.name}] Pipeline completed successfully. Results: ${outdir}"
+    } else {
+        log.error "-[${workflow.manifest.name}] Pipeline completed with errors"
+    }
 }
 
 //
