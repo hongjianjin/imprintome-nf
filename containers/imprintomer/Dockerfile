@@ -18,6 +18,11 @@ LABEL org.opencontainers.image.title="imprintomer" \
       org.opencontainers.image.source="https://github.com/hongjianjin/imprintome-nf" \
       org.opencontainers.image.licenses="Apache-2.0"
 
+# Use only the container's R libraries. Without this, an R_LIBS/R_LIBS_USER exported on the host
+# (e.g. a personal R 4.1 library in $HOME) leaks in through Singularity and R loads packages
+# compiled for another R version ("libRlapack.so: cannot open shared object file").
+ENV R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library     R_LIBS_USER=/dev/null     R_LIBS_SITE=/usr/local/lib/R/site-library
+
 # procps provides `ps`, which Nextflow uses to collect task metrics
 RUN apt-get update \
     && apt-get install -y --no-install-recommends procps \

@@ -107,3 +107,15 @@ See `containers/imprintomer/Dockerfile` for how to build it.
 
 Add `-resume` to reuse finished tasks. Changing only imprinting parameters re-runs only
 `RUN_IMPRINTOMER`.
+
+## Troubleshooting
+
+**`unable to load shared object '/home/<user>/R/.../*.so'` or `libRlapack.so: cannot open shared object file`**
+
+R inside the container picked up a personal R library exported on the host (`R_LIBS`), which
+Singularity passes into containers. The pipeline overrides `R_LIBS` for its tasks, and images
+built after 2026-11-16 set it too. When running the image by hand, add `--cleanenv`:
+
+```bash
+singularity exec --cleanenv docker://ghcr.io/hongjianjin/imprintomer:1.5.3 Rscript -e 'library(imprintomeR)'
+```
