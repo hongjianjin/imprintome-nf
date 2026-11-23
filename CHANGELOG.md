@@ -1,5 +1,29 @@
 # imprintome-nf: Changelog
 
+## v1.6.0dev - [unreleased]
+
+Runs imprintomeR 1.6.0. Sample-level scores and per-ICR calls with default settings are
+unchanged from 1.5.3 (see the imprintomeR 1.6.0 release notes for its bug fixes).
+
+### Pipeline
+
+- New uncertainty options for `RUN_IMPRINTOMER`: `--n_boot`, `--resample`, `--conf_level`,
+  `--resample_reference`, `--n_perm`, `--permute`, `--seed` (off by default). Invalid
+  combinations (`--resample_reference` without `--reference_group`, `--n_perm` without a
+  control reference) stop the run before QC.
+- `--skip_ewastools` is deprecated and ignored (no longer passed to `run_meth_QC.R`); the
+  control-probe and SNP checks are built into imprintomeR 1.6.0 and always run.
+
+### Container
+
+- `ghcr.io/hongjianjin/imprintomer:1.6.0`: imprintomeR v1.6.0; ewastools removed, illuminaio
+  added; pheatmap, Rtsne and cowplot installed explicitly (now Suggests in imprintomeR).
+
+### Outputs
+
+- `methqc/<platform>/` contamination table is now one long table (`donor1`, `sample1`,
+  `donor2`, `sample2`, `agreement`, `group`), as written by imprintomeR 1.6.0.
+
 ## v1.5.3 - 2026-11-16
 
 First release. Versioned to match the imprintomeR release it runs (1.5.3).

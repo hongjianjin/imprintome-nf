@@ -11,10 +11,12 @@ quality control and genomic imprinting analysis on Illumina DNA methylation arra
 (450K, EPIC, EPICv2) with the [imprintomeR](https://github.com/hongjianjin/imprintomeR) R package.
 
 1. Array QC of the whole cohort from raw IDATs: detection p-values, intensity, probe coverage,
-   beta densities, ewastools control metrics, normalization (`run_meth_QC.R`). Mixed-platform
+   beta densities, control-probe metrics, SNP-based sample-swap and donor checks, normalization
+   (`run_meth_QC.R`). Mixed-platform
    cohorts are split into one MethQcSet per platform.
 2. Imprinting analysis for each platform and each requested ICR probeset: Imprinting Deviation
-   Scores, per-ICR status, plots and summary workbooks (`run_imprintomeR.R`).
+   Scores, per-ICR status, plots and summary workbooks (`run_imprintomeR.R`), optionally with
+   bootstrap intervals and an origin permutation test.
 
 ## Usage
 
@@ -65,13 +67,13 @@ output layout. `nextflow run . --help` lists every parameter.
 ## Container
 
 Both processes run in one container holding R, imprintomeR and its Bioconductor dependencies,
-set with `--imprintomer_container` (default `ghcr.io/hongjianjin/imprintomer:1.5.3`).
+set with `--imprintomer_container` (default `ghcr.io/hongjianjin/imprintomer:1.6.0`).
 The image is built from [containers/imprintomer/Dockerfile](containers/imprintomer/Dockerfile) by the
 [Build imprintomeR container](.github/workflows/build-container.yml) GitHub Actions workflow, on pushes
 that change the Dockerfile or manually for another imprintomeR tag:
 
 ```bash
-gh workflow run build-container.yml -R hongjianjin/imprintome-nf -f imprintomer_ref=v1.5.3
+gh workflow run build-container.yml -R hongjianjin/imprintome-nf -f imprintomer_ref=v1.6.0
 ```
 
 You can also point the parameter at a local `.sif` file.
@@ -99,6 +101,7 @@ imprintome-nf is released under the [Apache License 2.0](LICENSE).
 ## Citations
 
 If you use imprintome-nf, please cite imprintomeR (Zenodo DOI [10.5281/zenodo.23741652](https://doi.org/10.5281/zenodo.23741652))
-and the tools it builds on: minfi, ewastools and [Nextflow](https://pubmed.ncbi.nlm.nih.gov/28398311/).
+and the tools it builds on: minfi, ewastools (whose control-probe and SNP checks imprintomeR
+reimplements; Heiss and Just 2018) and [Nextflow](https://pubmed.ncbi.nlm.nih.gov/28398311/).
 The pipeline structure follows the [nf-core](https://nf-co.re) framework
 ([Ewels et al. 2020](https://doi.org/10.1038/s41587-020-0439-x)).

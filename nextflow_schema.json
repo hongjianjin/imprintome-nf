@@ -10,7 +10,10 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": [
+                "input",
+                "outdir"
+            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -46,7 +49,11 @@
             "properties": {
                 "platform": {
                     "type": "string",
-                    "enum": ["EPIC", "EPICv2", "450K"],
+                    "enum": [
+                        "EPIC",
+                        "EPICv2",
+                        "450K"
+                    ],
                     "description": "Override platform detection. By default the platform is detected from the IDATs and mixed cohorts are split by platform.",
                     "fa_icon": "fas fa-microchip"
                 },
@@ -67,7 +74,11 @@
                 "normalization": {
                     "type": "string",
                     "default": "noob",
-                    "enum": ["noob", "noob_swan", "raw"],
+                    "enum": [
+                        "noob",
+                        "noob_swan",
+                        "raw"
+                    ],
                     "description": "Beta value normalization.",
                     "fa_icon": "fas fa-balance-scale"
                 },
@@ -90,8 +101,9 @@
                 },
                 "skip_ewastools": {
                     "type": "boolean",
-                    "description": "Skip the ewastools control metrics, contamination and donor checks.",
-                    "fa_icon": "fas fa-fast-forward"
+                    "description": "Deprecated and ignored since imprintomeR 1.6.0: the control-probe, contamination and donor checks are built in and always run.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-ban"
                 }
             }
         },
@@ -117,7 +129,10 @@
                 "genome_build": {
                     "type": "string",
                     "default": "hg38",
-                    "enum": ["hg19", "hg38"],
+                    "enum": [
+                        "hg19",
+                        "hg38"
+                    ],
                     "description": "Genome build used to load the probesets.",
                     "fa_icon": "fas fa-book"
                 },
@@ -148,7 +163,10 @@
                 "balance": {
                     "type": "string",
                     "default": "probe",
-                    "enum": ["probe", "icr"],
+                    "enum": [
+                        "probe",
+                        "icr"
+                    ],
                     "description": "Pooling for the sample-level IDS: probe (median over probes) or icr (ICR-balanced).",
                     "fa_icon": "fas fa-balance-scale-left"
                 },
@@ -161,7 +179,12 @@
                 "infinium_type": {
                     "type": "string",
                     "default": "all",
-                    "enum": ["all", "I", "II", "balanced"],
+                    "enum": [
+                        "all",
+                        "I",
+                        "II",
+                        "balanced"
+                    ],
                     "description": "Infinium probe design types to score.",
                     "fa_icon": "fas fa-microchip"
                 },
@@ -176,6 +199,58 @@
                     "type": "boolean",
                     "description": "Suppress all imprintomeR plot generation.",
                     "fa_icon": "fas fa-fast-forward"
+                },
+                "n_boot": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Bootstrap replicates for IDS/Angle intervals, Status_interval and Mechanism_support (0 = off; 1000-2000 for reporting).",
+                    "fa_icon": "fas fa-redo"
+                },
+                "resample": {
+                    "type": "string",
+                    "default": "icr",
+                    "enum": [
+                        "icr",
+                        "probe"
+                    ],
+                    "description": "Bootstrap scheme: icr (ICRs, then probes within ICRs) or probe. Used with --n_boot.",
+                    "fa_icon": "fas fa-random"
+                },
+                "resample_reference": {
+                    "type": "boolean",
+                    "description": "Also resample the control samples in each bootstrap replicate (needs --reference_group).",
+                    "fa_icon": "fas fa-random"
+                },
+                "n_perm": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Permutations for the origin test origin_perm_p (0 = off; needs --reference_group or --reference_file).",
+                    "fa_icon": "fas fa-dice"
+                },
+                "permute": {
+                    "type": "string",
+                    "enum": [
+                        "icr",
+                        "probe"
+                    ],
+                    "description": "Permutation unit for the origin test. Default: icr (falls back to probe, with a warning, on panels with one ICR per parental class such as chr11p15).",
+                    "fa_icon": "fas fa-dice"
+                },
+                "conf_level": {
+                    "type": "number",
+                    "default": 0.95,
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 1,
+                    "description": "Confidence level of the bootstrap intervals. Used with --n_boot.",
+                    "fa_icon": "fas fa-percentage"
+                },
+                "seed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Random seed for the bootstrap and permutations. Default: drawn at random and written to run_imprintomeR.log; set it to reproduce a run.",
+                    "fa_icon": "fas fa-seedling"
                 }
             }
         },
@@ -187,7 +262,7 @@
             "properties": {
                 "imprintomer_container": {
                     "type": "string",
-                    "default": "ghcr.io/hongjianjin/imprintomer:1.5.3",
+                    "default": "ghcr.io/hongjianjin/imprintomer:1.6.0",
                     "description": "Docker image or local .sif file with R, imprintomeR and its dependencies (see containers/imprintomer/Dockerfile).",
                     "fa_icon": "fab fa-docker"
                 }
@@ -258,7 +333,14 @@
                     "default": "copy",
                     "description": "Method used to save pipeline results to output directory.",
                     "fa_icon": "fas fa-copy",
-                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
                     "hidden": true
                 },
                 "monochrome_logs": {
@@ -281,7 +363,10 @@
                     "hidden": true
                 },
                 "help": {
-                    "type": ["boolean", "string"],
+                    "type": [
+                        "boolean",
+                        "string"
+                    ],
                     "description": "Display the help message."
                 },
                 "help_full": {
@@ -296,11 +381,23 @@
         }
     },
     "allOf": [
-        { "$ref": "#/$defs/input_output_options" },
-        { "$ref": "#/$defs/qc_options" },
-        { "$ref": "#/$defs/imprinting_options" },
-        { "$ref": "#/$defs/software_options" },
-        { "$ref": "#/$defs/institutional_config_options" },
-        { "$ref": "#/$defs/generic_options" }
+        {
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/qc_options"
+        },
+        {
+            "$ref": "#/$defs/imprinting_options"
+        },
+        {
+            "$ref": "#/$defs/software_options"
+        },
+        {
+            "$ref": "#/$defs/institutional_config_options"
+        },
+        {
+            "$ref": "#/$defs/generic_options"
+        }
     ]
 }

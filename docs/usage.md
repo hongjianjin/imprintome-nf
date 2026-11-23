@@ -61,7 +61,6 @@ imprintomeR image is pulled once.
 | `--qc_plot_types`  | `intensity,detection_pval,probe_coverage,beta_density`  | `--plot-types`     |
 | `--skip_qc_plots`  | `false`                                                 | `--no-qc-plots`    |
 | `--skip_qc_report` | `false`                                                 | `--no-qc-report`   |
-| `--skip_ewastools` | `false`                                                 | `--skip-ewastools` |
 
 ### Imprinting analysis (`run_imprintomeR.R`)
 
@@ -81,6 +80,32 @@ Runs once per platform found by QC and per probeset in `--probesets`.
 | `--infinium_type`      | `all`      | `--infinium-type`   |
 | `--imprint_plot_types` | `default`  | `--plot-types`      |
 | `--skip_imprint_plots` | `false`    | `--skip-plots`      |
+
+Control-probe metrics, SNP genotype calls, the sample-swap/contamination check and predicted
+donors always run (built into imprintomeR since 1.6.0). `--skip_ewastools` is deprecated and
+ignored; the pipeline prints a warning if it is set.
+
+### Uncertainty (`run_imprintomeR.R`, imprintomeR >= 1.6.0)
+
+Off by default. Bootstrap intervals add `Status_interval` (IDS interval above, below or across
+the cutoff) and `Mechanism_support`; the permutation test adds `origin_perm_p`.
+
+| Parameter              | Default | Script option          | Notes |
+| ---------------------- | ------- | ---------------------- | ----- |
+| `--n_boot`             | `0`     | `--n-boot`             | 1000-2000 for reporting |
+| `--resample`           | `icr`   | `--resample`           | `icr` or `probe`; used with `--n_boot` |
+| `--conf_level`         | `0.95`  | `--conf-level`         | used with `--n_boot` |
+| `--resample_reference` | `false` | `--resample-reference` | also resample the controls; needs `--reference_group` |
+| `--n_perm`             | `0`     | `--n-perm`             | origin permutation test; needs `--reference_group` or `--reference_file` |
+| `--permute`            | `icr`   | `--permute`            | `icr` or `probe` |
+| `--seed`               | random  | `--seed`               | written to `run_imprintomeR.log`; set it to reproduce a run |
+
+Example with intervals and the origin test against in-cohort controls:
+
+```bash
+nextflow run hongjianjin/imprintome-nf -r v1.6.0 -profile stjude --input samplesheet.csv --outdir results \
+    --reference_group control --n_boot 1000 --n_perm 1000 --seed 20261123 -resume
+```
 
 Script options without a pipeline parameter (for example `--radar-all TRUE`) can be appended in a
 custom config passed with `-c`:
@@ -110,7 +135,7 @@ process {
 `--imprintomer_container` accepts a registry image or a local Singularity image:
 
 ```bash
---imprintomer_container /research/.../containers/imprintomer_1.5.3.sif
+--imprintomer_container /research/.../containers/imprintomer_1.6.0.sif
 ```
 
 See `containers/imprintomer/Dockerfile` for how to build it.
@@ -129,5 +154,5 @@ Singularity passes into containers. The pipeline overrides `R_LIBS` for its task
 built after 2026-11-16 set it too. When running the image by hand, add `--cleanenv`:
 
 ```bash
-singularity exec --cleanenv docker://ghcr.io/hongjianjin/imprintomer:1.5.3 Rscript -e 'library(imprintomeR)'
+singularity exec --cleanenv docker://ghcr.io/hongjianjin/imprintomer:1.6.0 Rscript -e 'library(imprintomeR)'
 ```

@@ -5,7 +5,7 @@ on:
     inputs:
       imprintomer_ref:
         description: "imprintomeR git tag to install"
-        default: "v1.5.3"
+        default: "v1.6.0"
   push:
     branches: [main]
     paths:
@@ -19,7 +19,7 @@ jobs:
       contents: read
       packages: write
     env:
-      REF: ${{ github.event.inputs.imprintomer_ref || 'v1.5.3' }}
+      REF: ${{ github.event.inputs.imprintomer_ref || 'v1.6.0' }}
     steps:
       - uses: actions/checkout@v4
 

@@ -14,6 +14,7 @@
 │   └── <cohort>_<platform>_<probeset>/
 │       ├── *_imprintomeSet.rds          # ImprintomeSet object
 │       ├── *_AnalysisResults.xlsx       # sample-level IDS/IDI and per-ICR summaries
+│       │                                #   (+ intervals/Status_interval/origin_perm_p with --n_boot/--n_perm)
 │       ├── *_results_*.tsv              # per-ICR tables (with --icr)
 │       ├── metadata.tsv
 │       ├── run_imprintomeR.log

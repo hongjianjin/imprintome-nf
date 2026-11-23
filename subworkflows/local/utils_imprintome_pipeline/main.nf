@@ -36,6 +36,7 @@ workflow PIPELINE_INITIALISATION {
         validateParameters()
     }
     log.info paramsSummaryLog(workflow)
+    checkParameterCombinations()
 
     //
     // Create channel from input file provided through params.input
@@ -79,6 +80,28 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+//
+// Fail before QC on option combinations run_imprintomeR.R would reject after it
+//
+def checkParameterCombinations() {
+    if (params.skip_ewastools) {
+        log.warn "--skip_ewastools is deprecated and ignored: since imprintomeR 1.6.0 the control-probe, contamination and donor checks are built in and always run."
+    }
+    if (params.skip_imprintomer) {
+        return
+    }
+    def has_controls = params.reference_group || params.reference_file
+    if (params.resample_reference && !params.reference_group) {
+        error("--resample_reference resamples the in-cohort controls; it needs --reference_group.")
+    }
+    if (params.n_perm && !has_controls) {
+        error("--n_perm (origin permutation test) needs a control reference: --reference_group or --reference_file.")
+    }
+    if ((params.n_boot || params.n_perm) && params.seed == null) {
+        log.info "No --seed given: run_imprintomeR.R draws one and writes it to run_imprintomeR.log; pass --seed to reproduce a run."
+    }
+}
 
 //
 // Shared IDAT prefix of a Grn/Red pair, e.g. 200123450001_R01C01
