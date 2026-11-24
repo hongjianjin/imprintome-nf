@@ -1,6 +1,6 @@
 # imprintome-nf: Changelog
 
-## v1.6.0dev - [unreleased]
+## v1.6.0 - 2026-11-24
 
 Runs imprintomeR 1.6.0. Sample-level scores and per-ICR calls with default settings are
 unchanged from 1.5.3 (see the imprintomeR 1.6.0 release notes for its bug fixes).

@@ -32,7 +32,7 @@ Then, in each session:
 ```bash
 module load conda3/202402
 conda activate nextflow
-nextflow run hongjianjin/imprintome-nf -r v1.5.3 -profile stjude --input samplesheet.csv --outdir results
+nextflow run hongjianjin/imprintome-nf -r v1.6.0 -profile stjude --input samplesheet.csv --outdir results
 ```
 
 The `stjude` profile from nf-core/configs submits each process as an LSF job, picks the queue
@@ -42,7 +42,7 @@ long-running job, not on a login node, e.g.
 ```bash
 bsub -q standard -n 1 -M 8000 -W 72:00 -J imprintome -oo imprintome.log \
     "source \$(conda info --base)/etc/profile.d/conda.sh; conda activate nextflow; \
-     nextflow run hongjianjin/imprintome-nf -r v1.5.3 -profile stjude --input samplesheet.csv --outdir results -resume"
+     nextflow run hongjianjin/imprintome-nf -r v1.6.0 -profile stjude --input samplesheet.csv --outdir results -resume"
 ```
 
 Singularity images are cached under `NXF_SINGULARITY_CACHEDIR`; set it to a shared folder so the

@@ -36,7 +36,7 @@ Run on the St. Jude HPC with the [nf-core `stjude` institutional profile](https:
 
 ```bash
 nextflow run hongjianjin/imprintome-nf \
-    -r v1.5.3 \
+    -r v1.6.0 \
     -profile stjude \
     --input samplesheet.csv \
     --outdir results \
@@ -57,7 +57,11 @@ conda create -n nextflow -c conda-forge -c bioconda nextflow=24.10.5
 conda activate nextflow
 ```
 
-`-r v1.5.3` pins this release; use `-r main -latest` for the development version.
+`-r v1.6.0` pins this release; use `-r main -latest` for the development version.
+
+Bootstrap intervals and the origin permutation test (imprintomeR >= 1.6.0) are off by default;
+turn them on with, for example, `--n_boot 1000 --n_perm 1000 --seed 20261124` (see
+[docs/usage.md](docs/usage.md#uncertainty-run_imprintomerr-imprintomer--160)).
 
 Other profiles: `docker`, `singularity`, `apptainer`, `test`, `debug`.
 

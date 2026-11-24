@@ -4,7 +4,7 @@ template:
   org: stjude
   description: Illumina methylation array QC and genomic imprinting analysis with imprintomeR
   author: Hongjian Jin
-  version: 1.6.0dev
+  version: 1.6.0
   is_nfcore: false
   skip_features:
     - igenomes
